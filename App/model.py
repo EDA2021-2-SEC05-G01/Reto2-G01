@@ -70,7 +70,43 @@ def newCatalog():
 
 def AddArtworks(catalog, artwork):
     lt.addLast(catalog['artworks'], artwork)
-    mp.put(catalog['medios'], artwork['Medium'], artwork)
+    addMediumartwork(catalog, artwork)
+
+
+def addMediumartwork(catalog, artwork):
+    try:
+        medios = catalog["medios"]
+        if (artwork["Medium"] != ''):
+            medio = artwork["Medium"]
+        else:
+            medio = "unknown"
+
+        exitsmedium = mp.contains(medios, medio)
+
+        if exitsmedium:
+            entry = mp.get(medios, medio)
+            hmmm = me.getValue(entry)
+        else:
+            hmmm =  newMedium(medio)
+            mp.put(medios, medio, hmmm)
+        lt.addLast(hmmm["Medium", medio])
+    except Exception:
+        return None
+
+
+
+def newMedium(hmmm):
+    """
+    Esta funcion crea la estructura de libros asociados
+    a un año.
+    """
+    entry = {'medium': "", "artworks": None}
+    entry['medium'] = hmmm
+    entry['artworks'] = lt.newList('SINGLE_LINKED', comparemedio)
+    return entry
+
+
+
 
 # Funciones para creacion de datos
 
@@ -99,7 +135,13 @@ def compareMedium(medio, entry):
     else:
         return -1
 
-
+def comparemedio(medio1, medio2):
+    if (medio1 == medio2):
+        return 0
+    elif (medio1 > medio2):
+        return 1
+    else:
+        return 0
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento

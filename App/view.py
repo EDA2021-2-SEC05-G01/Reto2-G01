@@ -52,12 +52,14 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Inicializando Catálogo ....")
-        cont = controller.initCatalog()
+        catalog = controller.initCatalog()
 
     elif int(inputs[0]) == 2:
         print("Cargando información de los archivos ....")
-        controller.loadData(cont)
-        print(mp.size(cont["medios"]))
+        controller.loadData(catalog)
+        print("Obras Cargadas: " + str(lt.size(catalog["artworks"])))
+        print("Medios Cargados: " + str(mp.size(catalog["medios"])))
+        print(mp.get(catalog["medios"], "Albumen silver print"))
     else:
         sys.exit(0)
 sys.exit(0)
