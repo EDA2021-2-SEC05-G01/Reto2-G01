@@ -39,11 +39,66 @@ los mismos.
 
 # Construccion de modelos
 
+def newCatalog():
+    """ Inicializa el catálogo de libros
+
+    Crea una lista vacia para guardar todos los libros
+
+    Se crean indices (Maps) por los siguientes criterios:
+    Autores
+    ID libros
+    Tags
+    Año de publicacion
+
+    Retorna el catalogo inicializado.
+    """
+    catalog = {'artworks': None,
+               'medios': None}
+
+    catalog['artworks'] = lt.newList('SINGLE_LINKED', compareObjectIds)
+
+    catalog['medios'] = mp.newMap(138.112,
+                                   maptype='CHAINING',
+                                   loadfactor=2.0,
+                                   comparefunction=compareMedium)
+
+    return catalog
+
+
+
 # Funciones para agregar informacion al catalogo
+
+def AddArtworks(catalog, artwork):
+    lt.addLast(catalog['artworks'], artwork)
+    mp.put(catalog['medios'], artwork['Medium'], artwork)
 
 # Funciones para creacion de datos
 
 # Funciones de consulta
+
+def compareObjectIds(id1, id2):
+    """
+    Compara dos Objects ids de dos obras
+    """
+    if (id1 == id2):
+        return 0
+    elif id1 > id2:
+        return 1
+    else:
+        return -1
+
+
+def compareMedium(medio, entry):
+    """
+    Compara dos ids de libros, id es un identificador
+    y entry una pareja llave-valor
+    """
+    identry = me.getKey(entry)
+    if (medio == str(identry)):
+        return 0
+    else:
+        return -1
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 

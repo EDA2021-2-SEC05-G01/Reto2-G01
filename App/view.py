@@ -25,6 +25,7 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
+from DISClib.ADT import map as mp
 
 
 """
@@ -36,8 +37,10 @@ operación solicitada
 
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("1- Inicializar el catálogo")
+    print("2- Cargar información en el catálogo")
+    print("3- La n obras más antiguas para un medio específico")
+    print("0- Salir")
 
 catalog = None
 
@@ -48,11 +51,13 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
+        print("Inicializando Catálogo ....")
+        cont = controller.initCatalog()
 
     elif int(inputs[0]) == 2:
-        pass
-
+        print("Cargando información de los archivos ....")
+        controller.loadData(cont)
+        print(mp.size(cont["medios"]))
     else:
         sys.exit(0)
 sys.exit(0)
