@@ -61,4 +61,13 @@ def loadArtworks(catalog):
 
 # Funciones de ordenamiento
 
+def compareDates(catalog, medio):
+    model.compareDates(catalog, medio)
+    return catalog
+
 # Funciones de consulta sobre el catálogo
+
+def topnantiguas(catalog, medio, top):
+    compareDates(catalog, medio)
+    retorno = model.topnantiguas(catalog, medio, top)
+    return retorno

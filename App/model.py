@@ -30,6 +30,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import mergesort as mg
 assert cf
 
 """
@@ -70,40 +71,41 @@ def newCatalog():
 
 def AddArtworks(catalog, artwork):
     lt.addLast(catalog['artworks'], artwork)
-    addMediumartwork(catalog, artwork)
+    addlistmedium(catalog, artwork)
 
 
-def addMediumartwork(catalog, artwork):
-    try:
-        medios = catalog["medios"]
-        if (artwork["Medium"] != ''):
-            medio = artwork["Medium"]
-        else:
-            medio = "unknown"
+# def addMediumartwork(catalog, artwork):
+#     try:
+#         medios = catalog["medios"]
+#         if (artwork["Medium"] != ''):
+#             medio = artwork["Medium"]
+#         else:
+#             medio = "unknown"
 
-        exitsmedium = mp.contains(medios, medio)
+#         exitsmedium = mp.contains(medios, medio)
 
-        if exitsmedium:
-            entry = mp.get(medios, medio)
-            hmmm = me.getValue(entry)
-        else:
-            hmmm =  newMedium(medio)
-            mp.put(medios, medio, hmmm)
-        lt.addLast(hmmm["Medium", medio])
-    except Exception:
-        return None
+#         if exitsmedium:
+#             entry = mp.get(medios, medio)
+#             hmmm = me.getValue(entry)
+#         else:
+#             hmmm =  newMedium(medio)
+#             mp.put(medios, medio, hmmm)
+#         lt.addLast(hmmm["Medium", medio])
+#     except Exception:
+#         return None
 
-
-
-def newMedium(hmmm):
-    """
-    Esta funcion crea la estructura de libros asociados
-    a un año.
-    """
-    entry = {'medium': "", "artworks": None}
-    entry['medium'] = hmmm
-    entry['artworks'] = lt.newList('SINGLE_LINKED', comparemedio)
-    return entry
+def addlistmedium(catalog, artwork):
+    obras = catalog["artworks"]
+    medios = catalog["medios"]
+    if mp.contains(medios, artwork["Medium"]):
+        lista = mp.get(medios, artwork["Medium"])["value"]
+        lt.addLast(lista, artwork)
+        mp.put(medios, artwork["Medium"], lista)
+    else:
+        lst = lt.newList('ARRAY_LIST')
+        lt.addLast(lst, artwork)
+        mp.put(medios, artwork["Medium"], lst)
+    return catalog
 
 
 
@@ -135,13 +137,29 @@ def compareMedium(medio, entry):
     else:
         return -1
 
-def comparemedio(medio1, medio2):
-    if (medio1 == medio2):
-        return 0
-    elif (medio1 > medio2):
-        return 1
-    else:
-        return 0
+
+def topnantiguas(catalog, medio, top):
+    medios = catalog["medios"]
+    med = mp.get(medios, medio)["value"]
+    retorno = lt.newList()
+    centinela = 1
+    while top >= centinela:
+        lt.addLast(retorno, lt.getElement(med, centinela))
+        centinela += 1
+    return retorno
+
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 
+def compareDate(art1, art2):
+    if art1['Date'] != '' and art2['Date'] != '':
+        return float(art1['Date']) < float(art2['Date'])
+
+
 # Funciones de ordenamiento
+
+
+def compareDates(catalog, medio):
+    medios = catalog["medios"]
+    med = mp.get(medios, medio)["value"]
+    mg.sort(med, compareDate)

@@ -35,6 +35,21 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 
+
+# FUNCIONES PARA LA IMPRESIÓN DE RESULTADOS
+
+def printtopn(retorno):
+    size = lt.size(retorno)
+    if size:
+        for obras in lt.iterator(retorno):
+            print("Título: " + str(obras["Title"]) + "\n Date: " + str(obras["Date"]) + "\n"
+            )
+    else:
+        print("No se encontró el medio solicitado o no hay suficientes obras para hacer el top")
+
+
+
+
 def printMenu():
     print("Bienvenido")
     print("1- Inicializar el catálogo")
@@ -59,7 +74,11 @@ while True:
         controller.loadData(catalog)
         print("Obras Cargadas: " + str(lt.size(catalog["artworks"])))
         print("Medios Cargados: " + str(mp.size(catalog["medios"])))
-        print(mp.get(catalog["medios"], "Albumen silver print"))
+    elif int(inputs[0]) == 3:
+        medio = input("Ingrese el medio a consultar: \n")
+        top = int(input("Ingrese el top ? a consultar: \n"))
+        retorno = controller.topnantiguas(catalog, medio, top)
+        printtopn(retorno)
     else:
         sys.exit(0)
 sys.exit(0)
