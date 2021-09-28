@@ -54,15 +54,23 @@ def newCatalog():
     Retorna el catalogo inicializado.
     """
     catalog = {'artworks': None,
-               'medios': None}
+               'medios': None,
+               'artists': None,
+               'artistDate': None}
 
     catalog['artworks'] = lt.newList('SINGLE_LINKED', compareObjectIds)
 
-    catalog['medios'] = mp.newMap(138.112,
+    catalog['medios'] = mp.newMap(138112,
                                    maptype='CHAINING',
                                    loadfactor=2.0,
                                    comparefunction=compareMedium)
 
+    catalog['artists'] = lt.newList('SINGLE_LINKED', compareConstituentsID)
+
+    catalog['artistDate'] = mp.newMap(15300,
+                                   maptype='CHAINING',
+                                   loadfactor=2.0,
+                                   comparefunction=compareyear)
     return catalog
 
 
@@ -74,28 +82,12 @@ def AddArtworks(catalog, artwork):
     addlistmedium(catalog, artwork)
 
 
-# def addMediumartwork(catalog, artwork):
-#     try:
-#         medios = catalog["medios"]
-#         if (artwork["Medium"] != ''):
-#             medio = artwork["Medium"]
-#         else:
-#             medio = "unknown"
+def AddArtists(catalog, artist):
+    lt.addLast(catalog['artists'], artist)
+    addlistyear(catalog, artist)
 
-#         exitsmedium = mp.contains(medios, medio)
-
-#         if exitsmedium:
-#             entry = mp.get(medios, medio)
-#             hmmm = me.getValue(entry)
-#         else:
-#             hmmm =  newMedium(medio)
-#             mp.put(medios, medio, hmmm)
-#         lt.addLast(hmmm["Medium", medio])
-#     except Exception:
-#         return None
 
 def addlistmedium(catalog, artwork):
-    obras = catalog["artworks"]
     medios = catalog["medios"]
     if mp.contains(medios, artwork["Medium"]):
         lista = mp.get(medios, artwork["Medium"])["value"]
@@ -108,6 +100,18 @@ def addlistmedium(catalog, artwork):
     return catalog
 
 
+def addlistyear(catalog, artist):
+    years = catalog["artistDate"]
+    if mp.contains(years, artist["BeginDate"]):
+        lista = mp.get(years, artist["BeginDate"])["value"]
+        lt.addLast(lista, artist)
+        mp.put(years, artist["BeginDate"], lista)
+    else:
+        lst = lt.newList('ARRAY_LIST')
+        lt.addLast(lst, artist)
+        mp.put(years, artist["BeginDate"], lst)
+    return catalog
+
 
 
 # Funciones para creacion de datos
@@ -115,6 +119,17 @@ def addlistmedium(catalog, artwork):
 # Funciones de consulta
 
 def compareObjectIds(id1, id2):
+    """
+    Compara dos Objects ids de dos obras
+    """
+    if (id1 == id2):
+        return 0
+    elif id1 > id2:
+        return 1
+    else:
+        return -1
+
+def compareConstituentsID(id1, id2):
     """
     Compara dos Objects ids de dos obras
     """
@@ -138,15 +153,28 @@ def compareMedium(medio, entry):
         return -1
 
 
-def topnantiguas(catalog, medio, top):
-    medios = catalog["medios"]
-    med = mp.get(medios, medio)["value"]
-    retorno = lt.newList()
-    centinela = 1
-    while top >= centinela:
-        lt.addLast(retorno, lt.getElement(med, centinela))
-        centinela += 1
-    return retorno
+def compareyear(medio, entry):
+    """
+    Compara dos ids de libros, id es un identificador
+    y entry una pareja llave-valor
+    """
+    identry = me.getKey(entry)
+    if (medio == str(identry)):
+        return 0
+    else:
+        return -1
+
+def cronartist(catalog, anio1, anio2):
+    years = catalog["artistDate"]
+    i = int(anio1)
+    lista = lt.newList()
+    while i <= anio2:
+        i = str(i)
+        med = mp.get(years, i)["value"]
+        for n in lt.iterator(med):
+            lt.addLast(lista, n)
+        i = int(i) + 1
+    return lista
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -156,6 +184,9 @@ def compareDate(art1, art2):
         return float(art1['Date']) < float(art2['Date'])
 
 
+def compareArtistDate(art1, art2):
+    return float(art1) < float(art2)
+
 # Funciones de ordenamiento
 
 
@@ -163,3 +194,8 @@ def compareDates(catalog, medio):
     medios = catalog["medios"]
     med = mp.get(medios, medio)["value"]
     mg.sort(med, compareDate)
+
+def compareArtistsDates(catalog):
+    years = catalog["artistDate"]
+    med = mp.keySet(years)
+    mg.sort(med, compareArtistDate)

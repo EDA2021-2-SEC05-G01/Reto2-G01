@@ -47,6 +47,7 @@ def loadData(catalog):
     estructura de datos
     """
     loadArtworks(catalog)
+    loadArtists(catalog)
 
 
 def loadArtworks(catalog):
@@ -54,10 +55,20 @@ def loadArtworks(catalog):
     Carga los libros del archivo.  Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    booksfile = cf.data_dir + 'Artworks-utf8-small.csv'
-    input_file = csv.DictReader(open(booksfile, encoding='utf-8'))
-    for book in input_file:
-        model.AddArtworks(catalog, book)
+    artfile = cf.data_dir + 'Artworks-utf8-small.csv'
+    input_file = csv.DictReader(open(artfile, encoding='utf-8'))
+    for obra in input_file:
+        model.AddArtworks(catalog, obra)
+
+def loadArtists(catalog):
+    """
+    Carga los libros del archivo.  Por cada libro se indica al
+    modelo que debe adicionarlo al catalogo.
+    """
+    artfile = cf.data_dir + 'Artists-utf8-small.csv'
+    input_file = csv.DictReader(open(artfile, encoding='utf-8'))
+    for artist in input_file:
+        model.AddArtists(catalog, artist)
 
 # Funciones de ordenamiento
 
@@ -67,7 +78,7 @@ def compareDates(catalog, medio):
 
 # Funciones de consulta sobre el catálogo
 
-def topnantiguas(catalog, medio, top):
-    compareDates(catalog, medio)
-    retorno = model.topnantiguas(catalog, medio, top)
+def cronartist(catalog, anio1, anio2):
+    model.compareArtistsDates(catalog)
+    retorno = model.cronartist(catalog, anio1, anio2)
     return retorno

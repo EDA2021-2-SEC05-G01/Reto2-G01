@@ -38,14 +38,27 @@ operación solicitada
 
 # FUNCIONES PARA LA IMPRESIÓN DE RESULTADOS
 
-def printtopn(retorno):
+def printcornarttist(retorno, anio1, anio2):
     size = lt.size(retorno)
+    print("\nLa cantidad de artistas que nacieron entre " + str(anio1) + " y "
+        + str(anio2) + " es: " + str(size))
+    print("Muestra de los artistas nacidos en este rango: ")
     if size:
-        for obras in lt.iterator(retorno):
-            print("Título: " + str(obras["Title"]) + "\n Date: " + str(obras["Date"]) + "\n"
-            )
+        i = 1
+        nw = lt.newList()
+        while i <= 3:
+            lt.addLast(nw, lt.getElement(retorno, i))
+            i += 1
+        i = size - 2
+        while i <= size:
+            lt.addLast(nw, lt.getElement(retorno, i))
+            i += 1
+        for x in lt.iterator(nw):
+            print("\n Nombre: " + x["DisplayName"] + "\n Año de Nacimiento: " + x["BeginDate"] + 
+                "\n Año de Fallecimiento: " + x["EndDate"] + "\n Nacionalidad: " + x["Nationality"]
+                + "\n Género: " + x["Gender"] + "\n")
     else:
-        print("No se encontró el medio solicitado o no hay suficientes obras para hacer el top")
+        print("No se encontraron artistas en este rango de fechas")
 
 
 
@@ -54,7 +67,7 @@ def printMenu():
     print("Bienvenido")
     print("1- Inicializar el catálogo")
     print("2- Cargar información en el catálogo")
-    print("3- La n obras más antiguas para un medio específico")
+    print("3- Buscar a los autores nacidos en un rango de años")
     print("0- Salir")
 
 catalog = None
@@ -73,12 +86,17 @@ while True:
         print("Cargando información de los archivos ....")
         controller.loadData(catalog)
         print("Obras Cargadas: " + str(lt.size(catalog["artworks"])))
+        print("Artistas Cargados: " + str(lt.size(catalog["artists"])))
+        print("Años Cargados: " + str(mp.size(catalog["artistDate"])))
         print("Medios Cargados: " + str(mp.size(catalog["medios"])))
+
     elif int(inputs[0]) == 3:
-        medio = input("Ingrese el medio a consultar: \n")
-        top = int(input("Ingrese el top ? a consultar: \n"))
-        retorno = controller.topnantiguas(catalog, medio, top)
-        printtopn(retorno)
+        anio1 = int(input("Ingrese el año inicial a consultar: \n"))
+        anio2 = int(input("Ingrese el año final a consultar: \n"))
+        retorno = controller.cronartist(catalog, anio1, anio2)
+        printcornarttist(retorno, anio1, anio2)
+        
     else:
+        print("Cerrando aplicación... ")
         sys.exit(0)
 sys.exit(0)
