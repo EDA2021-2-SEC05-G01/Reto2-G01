@@ -170,9 +170,10 @@ def cronartist(catalog, anio1, anio2):
     lista = lt.newList()
     while i <= anio2:
         i = str(i)
-        med = mp.get(years, i)["value"]
-        for n in lt.iterator(med):
-            lt.addLast(lista, n)
+        if mp.contains(years, i):
+            med = mp.get(years, i)["value"]
+            for n in lt.iterator(med):
+                lt.addLast(lista, n)
         i = int(i) + 1
     return lista
 
