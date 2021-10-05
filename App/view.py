@@ -64,10 +64,11 @@ def printcornarttist(retorno, anio1, anio2):
 
 
 def printMenu():
-    print("Bienvenido")
+    print("\nBienvenido")
     print("1- Inicializar el catálogo")
     print("2- Cargar información en el catálogo")
     print("3- Buscar a los autores nacidos en un rango de años")
+    print("Lab 6 \n4- Contar el número total de obras de una Nacionalidad")
     print("0- Salir")
 
 catalog = None
@@ -85,16 +86,23 @@ while True:
     elif int(inputs[0]) == 2:
         print("Cargando información de los archivos ....")
         controller.loadData(catalog)
-        print("Obras Cargadas: " + str(lt.size(catalog["artworks"])))
+        print("\nObras Cargadas: " + str(lt.size(catalog["artworks"])))
         print("Artistas Cargados: " + str(lt.size(catalog["artists"])))
         print("Años Cargados: " + str(mp.size(catalog["artistDate"])))
         print("Medios Cargados: " + str(mp.size(catalog["medios"])))
+        print("C ids caragados: " + str(mp.size(catalog["Cids"])))
+        print("Nacionalidades cargadas: " + str(mp.size(catalog["nacionalidad"])))
 
     elif int(inputs[0]) == 3:
         anio1 = int(input("Ingrese el año inicial a consultar: \n"))
         anio2 = int(input("Ingrese el año final a consultar: \n"))
         retorno = controller.cronartist(catalog, anio1, anio2)
         printcornarttist(retorno, anio1, anio2)
+        
+    elif int(inputs[0]) == 4:
+        nac = input("Ingrese la nacionalidad a consultar: \n")
+        print("La cantidad de obras de la nacionalidad " + nac + 
+                ": " + str(lt.size(mp.get(catalog["nacionalidad"], nac)['value'])))
         
     else:
         print("Cerrando aplicación... ")

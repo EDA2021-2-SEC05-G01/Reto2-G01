@@ -56,7 +56,9 @@ def newCatalog():
     catalog = {'artworks': None,
                'medios': None,
                'artists': None,
-               'artistDate': None}
+               'Cids': None,
+               'artistDate': None,
+               'nacionalidad': None}
 
     catalog['artworks'] = lt.newList('SINGLE_LINKED', compareObjectIds)
 
@@ -71,6 +73,16 @@ def newCatalog():
                                    maptype='CHAINING',
                                    loadfactor=2.0,
                                    comparefunction=compareyear)
+
+    catalog['nacionalidad'] = mp.newMap(100000, 
+                                    maptype='CHAINING',
+                                    loadfactor=2.0,
+                                    comparefunction=compareyear)
+
+    catalog['Cids'] = mp.newMap(15300,
+                                   maptype='CHAINING',
+                                   loadfactor=2.0,
+                                   comparefunction=compareyear)
     return catalog
 
 
@@ -80,10 +92,12 @@ def newCatalog():
 def AddArtworks(catalog, artwork):
     lt.addLast(catalog['artworks'], artwork)
     addlistmedium(catalog, artwork)
+    addnacionality(catalog, artwork)
 
 
 def AddArtists(catalog, artist):
     lt.addLast(catalog['artists'], artist)
+    addids(catalog,artist)
     addlistyear(catalog, artist)
 
 
@@ -112,6 +126,51 @@ def addlistyear(catalog, artist):
         mp.put(years, artist["BeginDate"], lst)
     return catalog
 
+
+def addids(catalog, artist):
+    mp.put(catalog["Cids"], artist["ConstituentID"], artist["DisplayName"])
+
+
+def addnacionality(catalog, artwork):
+    id = artwork["ConstituentID"]
+    artistas = catalog["artists"]
+    pos = id.strip('[]').split(', ')
+    size = len(pos)
+    i = 0
+    j = 0
+    if size > 1:
+        nac = lt.newList("ARRAY_LIST")
+        while j < size:
+            for art in lt.iterator(artistas):
+                if i < size and pos[i] == art["ConstituentID"]:
+                    if lt.isPresent(nac, art["Nationality"]) == 0:
+                        lt.addLast(nac, art["Nationality"])
+                    i += 1
+            j += 1
+        artwork["Nationality"] = nac
+    else:
+        for art in lt.iterator(artistas):
+            nac = lt.newList("ARRAY_LIST")
+            if pos[0] == art["ConstituentID"]:
+                lt.addLast(nac, art["Nationality"])
+                artwork["Nationality"] = nac
+
+    return catalog
+
+
+def nacionality(catalog):
+    nac = catalog['nacionalidad']
+    for art in lt.iterator(catalog["artworks"]):
+        for nat in lt.iterator(art["Nationality"]):
+            if mp.contains(nac, nat):
+                lista = mp.get(nac, nat)['value']
+                lt.addLast(lista, art)
+                mp.put(nac, nat, lista)
+            else:
+                lista = lt.newList("ARRAY_LIST")
+                lt.addLast(lista, art)
+                mp.put(nac, nat, lista)
+    return catalog
 
 
 # Funciones para creacion de datos
