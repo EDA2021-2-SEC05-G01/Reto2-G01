@@ -89,7 +89,7 @@ while True:
         print("\nObras Cargadas: " + str(lt.size(catalog["artworks"])))
         print("Artistas Cargados: " + str(lt.size(catalog["artists"])))
         print("Años Cargados: " + str(mp.size(catalog["artistDate"])))
-        print("Medios Cargados: " + str(mp.size(catalog["medios"])))
+        print("Técnicas Cargadas: " + str(mp.size(catalog["medios"])))
         print("C ids caragados: " + str(mp.size(catalog["Cids"])))
         print("Nacionalidades cargadas: " + str(mp.size(catalog["nacionalidad"])))
 
@@ -101,8 +101,13 @@ while True:
         
     elif int(inputs[0]) == 4:
         nac = input("Ingrese la nacionalidad a consultar: \n")
-        print("La cantidad de obras de la nacionalidad " + nac + 
-                ": " + str(lt.size(mp.get(catalog["nacionalidad"], nac)['value'])))
+        if mp.contains(catalog["nacionalidad"], nac):
+            ret = mp.get(catalog["nacionalidad"], nac)['value']
+            size = lt.size(ret)
+            print("La cantidad de obras de la nacionalidad " + nac + 
+                    ": " + str(size))
+        else:
+            print("No se encontró dicha nacionalidad")
         
     else:
         print("Cerrando aplicación... ")

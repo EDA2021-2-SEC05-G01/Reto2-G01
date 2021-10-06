@@ -31,6 +31,7 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Algorithms.Sorting import mergesort as mg
+from time import process_time
 assert cf
 
 """
@@ -91,7 +92,6 @@ def newCatalog():
 
 def AddArtworks(catalog, artwork):
     lt.addLast(catalog['artworks'], artwork)
-    addlistmedium(catalog, artwork)
     addnacionality(catalog, artwork)
 
 
@@ -101,16 +101,17 @@ def AddArtists(catalog, artist):
     addlistyear(catalog, artist)
 
 
-def addlistmedium(catalog, artwork):
+def addlistmedium(catalog):
     medios = catalog["medios"]
-    if mp.contains(medios, artwork["Medium"]):
-        lista = mp.get(medios, artwork["Medium"])["value"]
-        lt.addLast(lista, artwork)
-        mp.put(medios, artwork["Medium"], lista)
-    else:
-        lst = lt.newList('ARRAY_LIST')
-        lt.addLast(lst, artwork)
-        mp.put(medios, artwork["Medium"], lst)
+    for art in lt.iterator(catalog["artworks"]):
+        if mp.contains(medios, art["Medium"]):
+            lista = mp.get(medios, art["Medium"])["value"]
+            lt.addLast(lista, art)
+            mp.put(medios, art["Medium"], lista)
+        else:
+            lst = lt.newList('ARRAY_LIST')
+            lt.addLast(lst, art)
+            mp.put(medios, art["Medium"], lst)
     return catalog
 
 
