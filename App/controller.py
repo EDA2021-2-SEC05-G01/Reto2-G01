@@ -49,17 +49,6 @@ def loadData(catalog):
     """
     loadArtists(catalog)
     loadArtworks(catalog)
-    start_time = process_time()
-    loaddNacionality(catalog)
-    stop_time = process_time()
-    elapsed_time_mseg = (stop_time - start_time)*1000
-    print("Tiempo de carga de las nacionalidades: " + str(elapsed_time_mseg))
-
-    start = process_time()
-    loadAddlistmedium(catalog)
-    stop = process_time()
-    elapsed_mseg = (stop - start)*1000
-    print("Tiempo de carga de las técnicas: " + str(elapsed_mseg))
 
 
 def loadArtworks(catalog):
@@ -82,11 +71,6 @@ def loadArtists(catalog):
     for artist in input_file:
         model.AddArtists(catalog, artist)
 
-def loaddNacionality(catalog):
-    model.nacionality(catalog)
-
-def loadAddlistmedium(catalog):
-    model.addlistmedium(catalog)
 
 # Funciones de ordenamiento
 

@@ -90,7 +90,6 @@ while True:
         print("Artistas Cargados: " + str(lt.size(catalog["artists"])))
         print("Años Cargados: " + str(mp.size(catalog["artistDate"])))
         print("Técnicas Cargadas: " + str(mp.size(catalog["medios"])))
-        print("C ids caragados: " + str(mp.size(catalog["Cids"])))
         print("Nacionalidades cargadas: " + str(mp.size(catalog["nacionalidad"])))
 
     elif int(inputs[0]) == 3:
