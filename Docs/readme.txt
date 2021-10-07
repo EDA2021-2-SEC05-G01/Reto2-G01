@@ -1,1 +1,2 @@
-Responder preguntas y marcar con el nombre de los integrantes
+- Req 3: Est 1 - Johan Alejandro Charry Acevedo - 20111151 - ja.charry@uniandes.edu.co
+- Req 4: Est 2 - Nicolas Toro Barrios - 202116790 - n.torob@uniandes.edu.co
