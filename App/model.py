@@ -63,7 +63,7 @@ def newCatalog():
 
     catalog['artworks'] = lt.newList('SINGLE_LINKED', compareObjectIds)
 
-    catalog['medios'] = mp.newMap(1000,
+    catalog['medios'] = mp.newMap(21251,
                                    maptype='CHAINING',
                                    loadfactor=2.0,
                                    comparefunction=compareMedium)
@@ -75,7 +75,7 @@ def newCatalog():
                                    loadfactor=2.0,
                                    comparefunction=compareyear)
 
-    catalog['nacionalidad'] = mp.newMap(1000, 
+    catalog['nacionalidad'] = mp.newMap(130, 
                                     maptype='CHAINING',
                                     loadfactor=2.0,
                                     comparefunction=compareyear)
