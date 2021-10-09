@@ -58,6 +58,7 @@ def newCatalog():
                'medios': None,
                'artists': None,
                'cids': None,
+               'cidname': None,
                'artistDate': None,
                'nacionalidad': None}
 
@@ -68,7 +69,10 @@ def newCatalog():
                                    loadfactor=2.0,
                                    comparefunction=compareMedium)
 
-    catalog['artists'] = lt.newList('SINGLE_LINKED', compareConstituentsID)
+    catalog['artists'] = mp.newMap(15300,
+                                   maptype='CHAINING',
+                                   loadfactor=2.0,
+                                   comparefunction=compareyear)
 
     catalog['artistDate'] = mp.newMap(15300,
                                    maptype='CHAINING',
@@ -84,6 +88,12 @@ def newCatalog():
                                    maptype='CHAINING',
                                    loadfactor=2.0,
                                    comparefunction=compareyear)
+    
+    catalog['cidname'] = mp.newMap(15300,
+                                   maptype='CHAINING',
+                                   loadfactor=2.0,
+                                   comparefunction=compareyear)
+
     return catalog
 
 
@@ -94,12 +104,14 @@ def AddArtworks(catalog, artwork):
     lt.addLast(catalog['artworks'], artwork)
     addnacionality(catalog, artwork)
     addlistmedium(catalog, artwork)
+    addartworksbyauthor(catalog, artwork)
 
 
 def AddArtists(catalog, artist):
-    lt.addLast(catalog['artists'], artist)
+    mp.put(catalog['artists'], artist["DisplayName"], lt.newList("ARRAY_LIST"))
     addlistyear(catalog, artist)
     addcids(catalog, artist)
+    addcidname(catalog, artist)
 
 
 def addlistmedium(catalog, art):
@@ -152,6 +164,27 @@ def addnacionality(catalog, artwork):
 def addcids(catalog, artist):
     id = artist["ConstituentID"]
     mp.put(catalog['cids'], id, artist['Nationality'])
+    return 
+    
+def addcidname(catalog, artist):
+    id = artist["ConstituentID"]
+    mp.put(catalog['cidname'], id, artist['DisplayName'])
+    return catalog
+
+
+def addartworksbyauthor(catalog, artwork):
+    idname = catalog['cidname']
+    names = catalog['artists']
+    ids = artwork['ConstituentID']
+    pos = ids.strip('[]').split(', ')
+    size = len(pos)
+    i = 0
+    while i < size:
+        nombre = mp.get(idname, str(pos[i]))['value']
+        g = mp.get(names, nombre)['value']
+        lt.addLast(g, artwork)
+        mp.put(names, nombre, g)
+        i +=1   
     return catalog
 
 
@@ -219,6 +252,25 @@ def cronartist(catalog, anio1, anio2):
     return lista
 
 
+def getmediums(catalog, autor):
+    obras = mp.get(catalog["artists"], autor)['value']
+    medios = mp.newMap(lt.size(obras)+3,
+                        maptype='CHAINING',
+                        loadfactor=2.0,
+                        comparefunction=compareMedium)
+    for art in lt.iterator(obras):
+        if mp.contains(medios, art["Medium"]):
+            lista = mp.get(medios, art["Medium"])['value']
+            lt.addLast(lista, art)
+            mp.put(medios, art["Medium"], lista)
+        else:
+            lista = lt.newList("ARRAY_LIST")
+            lt.addLast(lista, art)
+            mp.put(medios, art["Medium"], lista)
+
+    return medios
+
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 def compareDate(art1, art2):
@@ -228,6 +280,15 @@ def compareDate(art1, art2):
 
 def compareArtistDate(art1, art2):
     return float(art1) < float(art2)
+
+def mayor(medios):
+    mayor = 0
+    r = None
+    for n in lt.iterator(mp.keySet(medios)):
+        if lt.size(mp.get(medios, n)['value']) > mayor:
+            mayor = lt.size(mp.get(medios, n)['value'])
+            r = n
+    return r
 
 # Funciones de ordenamiento
 

@@ -57,8 +57,7 @@ def loadData(catalog):
 
 def loadArtworks(catalog):
     """
-    Carga los libros del archivo.  Por cada libro se indica al
-    modelo que debe adicionarlo al catalogo.
+    Carga las obras del museo.
     """
     artfile = cf.data_dir + 'Artworks-utf8-large.csv'
     input_file = csv.DictReader(open(artfile, encoding='utf-8'))
@@ -67,8 +66,7 @@ def loadArtworks(catalog):
 
 def loadArtists(catalog):
     """
-    Carga los libros del archivo.  Por cada libro se indica al
-    modelo que debe adicionarlo al catalogo.
+    Carga los artistas de las obras.
     """
     artfile = cf.data_dir + 'Artists-utf8-large.csv'
     input_file = csv.DictReader(open(artfile, encoding='utf-8'))
@@ -82,9 +80,17 @@ def compareDates(catalog, medio):
     model.compareDates(catalog, medio)
     return catalog
 
+def mayor(obras):
+    o = model.mayor(obras)
+    return o
+
 # Funciones de consulta sobre el catálogo
 
 def cronartist(catalog, anio1, anio2):
     model.compareArtistsDates(catalog)
     retorno = model.cronartist(catalog, anio1, anio2)
     return retorno
+
+def getmediums(catalog, autor):
+    medios = model.getmediums(catalog, autor)
+    return medios
