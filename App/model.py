@@ -25,6 +25,7 @@
  """
 
 
+from DISClib.ADT.orderedmap import keySet
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
@@ -293,10 +294,8 @@ def mayor(medios):
 # Funciones de ordenamiento
 
 
-def compareDates(catalog, medio):
-    medios = catalog["medios"]
-    med = mp.get(medios, medio)["value"]
-    mg.sort(med, compareDate)
+def compareDates(mayor):
+    mg.sort(mayor, compareDate)
 
 def compareArtistsDates(catalog):
     years = catalog["artistDate"]

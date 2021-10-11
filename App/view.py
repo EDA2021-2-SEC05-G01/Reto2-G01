@@ -71,15 +71,17 @@ def printgetmediums(catalog, medios, autor):
         lista = lt.newList("ARRAY_LIST")
         i = 1
         mayor = mp.get(medios, mayor)['value']
+        controller.compareDates(mayor)
         while i <= 3:
             x = lt.getElement(mayor, i)
             lt.addLast(lista, x)
             i += 1
-        i = -1
-        while i <= -3:
-            x = lt.getElement(mayor, i)
+        i = 1
+        while i <= 3:
+            x = lt.lastElement(mayor)
             lt.addLast(lista, x)
-            i -= 1
+            lt.removeLast(mayor)
+            i += 1
         for art in lt.iterator(lista):
             print('\nTítulo: ' + art["Title"] + '\nFecha de la obra: ' + art["Date"] + 
                     '\nTécnica: ' + art["Medium"] + '\nDimensiones: ' + art["Dimensions"])

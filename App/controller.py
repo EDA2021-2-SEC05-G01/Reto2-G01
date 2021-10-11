@@ -76,9 +76,9 @@ def loadArtists(catalog):
 
 # Funciones de ordenamiento
 
-def compareDates(catalog, medio):
-    model.compareDates(catalog, medio)
-    return catalog
+def compareDates(medios):
+    model.compareDates(medios)
+    return medios
 
 def mayor(obras):
     o = model.mayor(obras)
