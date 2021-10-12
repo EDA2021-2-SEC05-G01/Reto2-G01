@@ -32,6 +32,7 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Algorithms.Sorting import mergesort as mg
+from time import strptime
 from time import process_time
 assert cf
 
@@ -61,7 +62,8 @@ def newCatalog():
                'cids': None,
                'cidname': None,
                'artistDate': None,
-               'nacionalidad': None}
+               'nacionalidad': None,
+               'dates': None}
 
     catalog['artworks'] = lt.newList('SINGLE_LINKED', compareObjectIds)
 
@@ -95,6 +97,13 @@ def newCatalog():
                                    loadfactor=2.0,
                                    comparefunction=compareyear)
 
+    catalog['departamentos'] = mp.newMap(1000,
+                                    maptype='CHAINING',
+                                    loadfactor=2.0)
+
+    catalog['dates'] = mp.newMap(1000,
+                                    maptype='CHAINING',
+                                    loadfactor=2.0)
     return catalog
 
 
@@ -104,28 +113,15 @@ def newCatalog():
 def AddArtworks(catalog, artwork):
     lt.addLast(catalog['artworks'], artwork)
     addnacionality(catalog, artwork)
-    addlistmedium(catalog, artwork)
+    addall(catalog, artwork)
     addartworksbyauthor(catalog, artwork)
-
+    addname(catalog, artwork)
 
 def AddArtists(catalog, artist):
     mp.put(catalog['artists'], artist["DisplayName"], lt.newList("ARRAY_LIST"))
     addlistyear(catalog, artist)
     addcids(catalog, artist)
-    addcidname(catalog, artist)
 
-
-def addlistmedium(catalog, art):
-    medios = catalog["medios"]
-    if mp.contains(medios, art["Medium"]):
-        lista = mp.get(medios, art["Medium"])["value"]
-        lt.addLast(lista, art)
-        mp.put(medios, art["Medium"], lista)
-    else:
-        lst = lt.newList('ARRAY_LIST')
-        lt.addLast(lst, art)
-        mp.put(medios, art["Medium"], lst)
-    return catalog
 
 
 def addlistyear(catalog, artist):
@@ -165,12 +161,8 @@ def addnacionality(catalog, artwork):
 def addcids(catalog, artist):
     id = artist["ConstituentID"]
     mp.put(catalog['cids'], id, artist['Nationality'])
-    return 
-    
-def addcidname(catalog, artist):
-    id = artist["ConstituentID"]
     mp.put(catalog['cidname'], id, artist['DisplayName'])
-    return catalog
+    return 
 
 
 def addartworksbyauthor(catalog, artwork):
@@ -188,10 +180,66 @@ def addartworksbyauthor(catalog, artwork):
         i +=1   
     return catalog
 
+def addall(catalog, art):
+    dates = catalog['dates']
+    dep = catalog["departamentos"]
+    medios = catalog["medios"]
+
+    if mp.contains(medios, art["Medium"]):
+        lista = mp.get(medios, art["Medium"])["value"]
+        lt.addLast(lista, art)
+        mp.put(medios, art["Medium"], lista)
+    else:
+        lst = lt.newList('ARRAY_LIST')
+        lt.addLast(lst, art)
+        mp.put(medios, art["Medium"], lst)
+
+    if mp.contains(dates, art['DateAcquired']):
+        lista = mp.get(dates, art['DateAcquired'])['value']
+        lt.addLast(lista, art)
+        mp.put(dates, art["DateAcquired"], lista)
+    else:
+        lst = lt.newList('ARRAY_LIST')
+        lt.addLast(lst, art)
+        mp.put(dates, art["DateAcquired"], lst)
+
+    if mp.contains(dep, art["Department"]):
+        lista = mp.get(dep, art["Department"])["value"]
+        lt.addLast(lista, art)
+        mp.put(dep, art["Department"], lista)
+    else:
+        lst = lt.newList('ARRAY_LIST')
+        lt.addLast(lst, art)
+        mp.put(dep, art["Department"], lst)
+
+    return catalog
+
+def addname(catalog, artwork):
+    idname = catalog['cidname']
+    ids = artwork['ConstituentID']
+    pos = ids.strip('[]').split(', ')
+    i = 0
+    names = ''
+    for name in pos:
+        names += ' ' + str(mp.get(idname, name)['value'])
+    artwork['ConstituentID'] = names
+    return catalog
+
 
 # Funciones para creacion de datos
 
 # Funciones de consulta
+
+def comparedates(id, entry):
+    identry = me.getKey(entry)
+    if id == '' or identry == '':
+        return  -1
+    if (strptime(id, "%Y-%m-%d") == strptime(identry, "%Y-%m-%d")):
+        return 0
+    elif (strptime(id, "%Y-%m-%d") > strptime(identry, "%Y-%m-%d")):
+        return 1
+    else:
+        return -1
 
 def compareObjectIds(id1, id2):
     """
@@ -271,12 +319,31 @@ def getmediums(catalog, autor):
 
     return medios
 
+def comparedateacquired(catalog, finc, ffin):
+    finc = strptime(finc, "%Y-%m-%d")
+    ffin = strptime(ffin, "%Y-%m-%d")
+    key = mp.keySet(catalog['dates'])
+    lst = lt.newList("ARRAY_LIST")
+    purchase = 0
+    for k in lt.iterator(key):
+        if k != '' and strptime(k, "%Y-%m-%d") >= finc and strptime(k, "%Y-%m-%d") <= ffin:
+            for n in lt.iterator(mp.get(catalog['dates'], k)['value']):
+                lt.addLast(lst, n)
+                if n["CreditLine"] == 'Purchase':
+                    purchase += 1
+    comparedates(lst)
+    lt.addLast(lst, purchase)
+    return lst
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 def compareDate(art1, art2):
     if art1['Date'] != '' and art2['Date'] != '':
         return float(art1['Date']) < float(art2['Date'])
+
+def compareedates(art1, art2):
+    if art1['DateAcquired'] != '' and art2['DateAcquired'] != '':
+        return strptime(art1['DateAcquired'], "%Y-%m-%d") < strptime(art2['DateAcquired'], "%Y-%m-%d")
 
 
 def compareArtistDate(art1, art2):
@@ -291,6 +358,8 @@ def mayor(medios):
             r = n
     return r
 
+
+
 # Funciones de ordenamiento
 
 
@@ -301,3 +370,6 @@ def compareArtistsDates(catalog):
     years = catalog["artistDate"]
     med = mp.keySet(years)
     mg.sort(med, compareArtistDate)
+
+def comparedates(lst):
+    mg.sort(lst, compareedates)

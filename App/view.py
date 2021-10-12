@@ -26,6 +26,8 @@ import controller
 from DISClib.ADT import list as lt
 assert cf
 from DISClib.ADT import map as mp
+from time import strptime
+import model
 
 
 """
@@ -42,7 +44,7 @@ def printcornarttist(retorno, anio1, anio2):
     size = lt.size(retorno)
     print("\nLa cantidad de artistas que nacieron entre " + str(anio1) + " y "
         + str(anio2) + " es: " + str(size))
-    print("Muestra de los artistas nacidos en este rango: ")
+    print("\nMuestra de los artistas nacidos en este rango: ")
     if size:
         i = 1
         nw = lt.newList()
@@ -59,6 +61,29 @@ def printcornarttist(retorno, anio1, anio2):
                 + "\n Género: " + x["Gender"] + "\n")
     else:
         print("No se encontraron artistas en este rango de fechas")
+
+def printcomparedateacquired(obras, ffin, finc):
+    purchase = lt.lastElement(obras)
+    lt.removeLast(obras)
+    size = lt.size(obras)
+    if size:
+        print("\nDurante  " + finc + ' y ' + ffin + ' se adquirió un total de: ' + str(size) + ' obras.')
+        print("\nDe estas, " + str(purchase) + ' fueron adquiridas através de una compra.')
+        i = 1
+        nw = lt.newList()
+        while i <= 3:
+            lt.addLast(nw, lt.getElement(obras, i))
+            i += 1
+        i = size - 2
+        while i <= size:
+           lt.addLast(nw, lt.getElement(obras, i))
+           i += 1
+        for x in lt.iterator(nw):
+            print("\nTitulo: " + x["Title"] + "\nAutores: " + x["ConstituentID"] + 
+                "\nFecha de Adquisición: " + x["DateAcquired"] + "\nTécnica: " + x["Medium"]
+                + "\nDimensiones: " + x["Dimensions"] + "\n")
+    else:
+        print('\nNo se encontraron obras en este rango de fechas.')
 
 def printgetmediums(catalog, medios, autor):
     obras = lt.size(mp.get(catalog["artists"], autor)['value'])
@@ -96,7 +121,7 @@ def printMenu():
     print("3- Consultar las obras adquiridas en un rango de fechas")
     print("4- Clasificar las obras de un artista por técnica")
     print("5- Clasificar las obras por la nacionalidad de sus creadores")
-    print("6- Calcular costo de tranporte de un departamento")
+    print("6- Calcular costo de transporte de un departamento")
     print("0- Salir")
 
 catalog = None
@@ -117,6 +142,7 @@ while True:
         print("Años Cargados: " + str(mp.size(catalog["artistDate"])))
         print("Técnicas Cargadas: " + str(mp.size(catalog["medios"])))
         print("Nacionalidades cargadas: " + str(mp.size(catalog["nacionalidad"])))
+        print("Departamentos cargados: " + str(mp.size(catalog['departamentos'])))
 
     elif int(inputs[0]) == 2:
         anio1 = int(input("Ingrese el año inicial a consultar: \n"))
@@ -125,12 +151,19 @@ while True:
         printcornarttist(retorno, anio1, anio2)
         
     elif int(inputs[0]) == 3:
-        pass
+        finc = str(input("Ingrese la fecha incial de búsqueda (AAAA-MM-DD): "))
+        ffin = str(input("Ingrese la fecha final de búsqueda (AAAA-MM-DD): "))
+        obras = controller.comparedateacquired(catalog, finc, ffin)
+        printcomparedateacquired(obras, ffin, finc)
     
     elif int(inputs[0]) == 4:
         autor = input('\nIngrese el nombre del Autor que desea consultar:\n')
         medios = controller.getmediums(catalog, autor)
         printgetmediums(catalog, medios, autor)
+
+    elif int(inputs[0]) == 6:
+        print("Cantidad de obras DRAWINGS & PRINTS: " + str(lt.size(mp.get(catalog['departamentos'], "Drawings & Prints")['value'])))
+    
     else:
         print("Cerrando aplicación... ")
         sys.exit(0)

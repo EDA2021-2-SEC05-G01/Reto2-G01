@@ -91,6 +91,10 @@ def cronartist(catalog, anio1, anio2):
     retorno = model.cronartist(catalog, anio1, anio2)
     return retorno
 
+def comparedateacquired(catalog, finc, ffin):
+    retorno = model.comparedateacquired(catalog, finc, ffin)
+    return retorno
+
 def getmediums(catalog, autor):
     medios = model.getmediums(catalog, autor)
     return medios
