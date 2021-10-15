@@ -120,11 +120,13 @@ def printcalculartransporte(catalog, mapa, departamento):
         print("\nEl peso total de estas obras es: " + str(mp.get(mapa, "peso")['value']) + "kg")
         print("\nEl precio estimado de transporte para estas obras es: " + str(mp.get(mapa, "precio")['value']) + 'USD')
         costosas = mp.get(mapa, "costosas")['value']
+        print('\nLas 5 obras más costosas a transportar son: ')
         for x in lt.iterator(costosas):
             print("\nTitulo: " + x["Title"] + "\nAutores: " + x["ConstituentID"] + 
                 "\nClasificación: " + x["Classification"] + "\nFecha: " + x["Date"]
                 + "\nTécnica: " + x["Medium"] + "\nDimensiones: " + x["Dimensions"] + "\nCosto de transporte: " + str(x["transporte"]))
         antiguas = mp.get(mapa, "antiguas")['value']
+        print('\nLas 5 obras más antiguas a transportar son: ')
         for x in lt.iterator(antiguas):
             print("\nTitulo: " + x["Title"] + "\nAutores: " + x["ConstituentID"] + 
                     "\nClasificación: " + x["Classification"] + "\nFecha: " + x["Date"]
