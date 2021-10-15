@@ -113,6 +113,26 @@ def printgetmediums(catalog, medios, autor):
     else:
         print("No se encontraron obras de ese autor")
 
+def printcalculartransporte(catalog, mapa, departamento):
+    obras = lt.size(mp.get(catalog["departamentos"], departamento)['value'])
+    if obras:
+        print("\nEl museo va a transportar " + str(obras) + " obras del departamento " + departamento)
+        print("\nEl peso total de estas obras es: " + str(mp.get(mapa, "peso")['value']) + "kg")
+        print("\nEl precio estimado de transporte para estas obras es: " + str(mp.get(mapa, "precio")['value']) + 'USD')
+        costosas = mp.get(mapa, "costosas")['value']
+        for x in lt.iterator(costosas):
+            print("\nTitulo: " + x["Title"] + "\nAutores: " + x["ConstituentID"] + 
+                "\nClasificación: " + x["Classification"] + "\nFecha: " + x["Date"]
+                + "\nTécnica: " + x["Medium"] + "\nDimensiones: " + x["Dimensions"] + "\nCosto de transporte: " + str(x["transporte"]))
+        antiguas = mp.get(mapa, "antiguas")['value']
+        for x in lt.iterator(antiguas):
+            print("\nTitulo: " + x["Title"] + "\nAutores: " + x["ConstituentID"] + 
+                    "\nClasificación: " + x["Classification"] + "\nFecha: " + x["Date"]
+                    + "\nTécnica: " + x["Medium"] + "\nDimensiones: " + x["Dimensions"] + "\nCosto de transporte: " + str(x["transporte"]))
+    else:
+        print("\nNo se encontraron obras del departamento: " + departamento)
+
+#------------------------------------------------------------------------------------------------
 
 def printMenu():
     print("\nBienvenido")
@@ -162,8 +182,10 @@ while True:
         printgetmediums(catalog, medios, autor)
 
     elif int(inputs[0]) == 6:
-        print("Cantidad de obras DRAWINGS & PRINTS: " + str(lt.size(mp.get(catalog['departamentos'], "Drawings & Prints")['value'])))
-    
+        departamento = input("\nIngrese el nombre del departamento que desea consultar: ")
+        mapa = controller.calculartransporte(catalog, departamento)
+        printcalculartransporte(catalog, mapa, departamento)
+
     else:
         print("Cerrando aplicación... ")
         sys.exit(0)

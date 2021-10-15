@@ -116,6 +116,7 @@ def AddArtworks(catalog, artwork):
     addall(catalog, artwork)
     addartworksbyauthor(catalog, artwork)
     addname(catalog, artwork)
+    addareas(catalog, artwork)
 
 def AddArtists(catalog, artist):
     mp.put(catalog['artists'], artist["DisplayName"], lt.newList("ARRAY_LIST"))
@@ -225,8 +226,21 @@ def addname(catalog, artwork):
     artwork['ConstituentID'] = names
     return catalog
 
+def addareas(catalog, obra):
+    if obra["Diameter (cm)"] != '':
+        area = areacirculo(obra["Diameter (cm)"])
+    elif obra["Depth (cm)"] != '' and obra["Depth (cm)"] != "0" and obra["Width (cm)"] != '' and obra["Width (cm)"] != "0" and obra["Height (cm)"] != '' and obra["Height (cm)"] != "0":
+        area = areacubo(obra["Width (cm)"], obra["Height (cm)"], obra["Depth (cm)"])
+    elif obra["Width (cm)"] != '' and obra["Width (cm)"] != "0" and obra["Height (cm)"] != '' and obra["Height (cm)"] != "0":
+        area = areacuadrado(obra["Width (cm)"], obra["Height (cm)"])
+    else:
+        area = 0
+    if obra['Weight (kg)'] != '':
+        area = area + float(obra['Weight (kg)'])
+    obra["area"] = area
+    return catalog
 
-# Funciones para creacion de datos
+# Funciones para creacion de dato
 
 # Funciones de consulta
 
@@ -335,6 +349,35 @@ def comparedateacquired(catalog, finc, ffin):
     lt.addLast(lst, purchase)
     return lst
 
+
+def calculartransporte(catalog, departamento):
+    precio = 0
+    mapa = mp.newMap(5, maptype="CHAINING", loadfactor=2.0)
+    peso = 0
+    if mp.contains(catalog['departamentos'], departamento):
+        obras = mp.get(catalog['departamentos'], departamento)['value']
+        for art in lt.iterator(obras):
+            area = float(art['area'])
+            pr = 0
+            if area != 0:
+                pr += area * 72
+                precio += round(pr, 3)
+            else:
+                pr = 48
+                precio += pr
+            art['transporte'] = round(pr, 3)
+            if art["Weight (kg)"] != "":
+                peso += float(art["Weight (kg)"])
+    mp.put(mapa, "peso", peso)
+    mp.put(mapa, "precio", round(precio, 3))
+    compareprecio(obras)
+    ls = cincoprimeros(obras)
+    mp.put(mapa, "costosas", ls)
+    comparedates(obras)
+    ls = cincoprimeros(obras)
+    mp.put(mapa, "antiguas", ls)
+    return mapa
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 def compareDate(art1, art2):
@@ -358,6 +401,30 @@ def mayor(medios):
             r = n
     return r
 
+def compareprecios(obra1, obra2):
+    return float(obra1['transporte']) > float(obra2['transporte'])
+
+
+def cincoprimeros(lista):
+    if lt.size(lista) > 5:
+        i = 1
+        lst = lt.newList("ARRAY_LIST")
+        while i <= 5:
+            x = lt.getElement(lista, i)
+            lt.addLast(lst, x)
+            i += 1
+        return lst
+
+    else:
+        i = 1
+        lst = lt.newList("ARRAY_LIST")
+        while i <= lt.size(lista):
+            x = lt.getElement(lista, i)
+            lt.addLast(lst, x)
+            i += 1
+        return lst
+
+
 
 
 # Funciones de ordenamiento
@@ -373,3 +440,32 @@ def compareArtistsDates(catalog):
 
 def comparedates(lst):
     mg.sort(lst, compareedates)
+
+def compareprecio(lst):
+    mg.sort(lst, compareprecios)
+
+
+# Funciones de aritmática y cálculos
+
+def areacirculo(diametro):
+    diam = cmam(diametro)
+    area = (3.1416)*((float(diam)/2)**2)
+    return area
+
+def areacuadrado(ancho, alto):
+    anc = cmam(ancho)
+    alt = cmam(alto)
+    area = float(anc)*float(alt)
+    return area
+
+def areacubo(ancho, alto, profundidad):
+    anc = cmam(ancho)
+    alt = cmam(alto)
+    pro = cmam(profundidad)
+    area = float(anc)*float(alt)*float(pro)
+    return area
+
+def cmam(numero):
+    numero = float(numero)
+    m = numero/100
+    return m

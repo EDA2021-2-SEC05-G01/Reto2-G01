@@ -98,3 +98,7 @@ def comparedateacquired(catalog, finc, ffin):
 def getmediums(catalog, autor):
     medios = model.getmediums(catalog, autor)
     return medios
+
+def calculartransporte(catalog, departamento):
+    mapa = model.calculartransporte(catalog, departamento)
+    return mapa
