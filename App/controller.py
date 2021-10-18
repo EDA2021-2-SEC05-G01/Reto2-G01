@@ -48,11 +48,7 @@ def loadData(catalog):
     estructura de datos
     """
     loadArtists(catalog)
-    start_time = process_time()
     loadArtworks(catalog)
-    stop_time = process_time()
-    elapsed_time_mseg = (stop_time - start_time)*1000
-    print("tiempo de ejecución: " + str(elapsed_time_mseg))
 
 
 def loadArtworks(catalog):

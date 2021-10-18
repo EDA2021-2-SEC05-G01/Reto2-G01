@@ -168,11 +168,12 @@ while True:
         print("Departamentos cargados: " + str(mp.size(catalog['departamentos'])))
 
     elif int(inputs[0]) == 2:
+        anio1 = int(input("Ingrese el año inicial a consultar: \n"))
+        anio2 = int(input("Ingrese el año final a consultar: \n"))
+
         #PRUEBA DE EJECUCIÓN
         start_time = process_time()
 
-        anio1 = int(input("Ingrese el año inicial a consultar: \n"))
-        anio2 = int(input("Ingrese el año final a consultar: \n"))
         retorno = controller.cronartist(catalog, anio1, anio2)
         printcornarttist(retorno, anio1, anio2)
 
@@ -182,11 +183,12 @@ while True:
         print("tiempo de ejecución: " + str(elapsed_time_mseg))
         
     elif int(inputs[0]) == 3:
+        finc = str(input("Ingrese la fecha incial de búsqueda (AAAA-MM-DD): "))
+        ffin = str(input("Ingrese la fecha final de búsqueda (AAAA-MM-DD): "))
+
         #PRUEBA DE EJECUCIÓN
         start_time = process_time()
 
-        finc = str(input("Ingrese la fecha incial de búsqueda (AAAA-MM-DD): "))
-        ffin = str(input("Ingrese la fecha final de búsqueda (AAAA-MM-DD): "))
         obras = controller.comparedateacquired(catalog, finc, ffin)
         printcomparedateacquired(obras, ffin, finc)
 
@@ -196,10 +198,11 @@ while True:
         print("tiempo de ejecución: " + str(elapsed_time_mseg))
     
     elif int(inputs[0]) == 4:
+        autor = input('\nIngrese el nombre del Autor que desea consultar:\n')
+
         #PRUEBA DE EJECUCIÓN
         start_time = process_time()
 
-        autor = input('\nIngrese el nombre del Autor que desea consultar:\n')
         medios = controller.getmediums(catalog, autor)
         printgetmediums(catalog, medios, autor)
         
@@ -209,10 +212,11 @@ while True:
         print("tiempo de ejecución: " + str(elapsed_time_mseg))
 
     elif int(inputs[0]) == 6:
+        departamento = input("\nIngrese el nombre del departamento que desea consultar: ")
+        
         #PRUEBA DE EJECUCIÓN
         start_time = process_time()
 
-        departamento = input("\nIngrese el nombre del departamento que desea consultar: ")
         mapa = controller.calculartransporte(catalog, departamento)
         printcalculartransporte(catalog, mapa, departamento)
 
