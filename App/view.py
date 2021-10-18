@@ -27,6 +27,7 @@ from DISClib.ADT import list as lt
 assert cf
 from DISClib.ADT import map as mp
 from time import strptime
+from time import process_time
 import model
 
 
@@ -167,26 +168,58 @@ while True:
         print("Departamentos cargados: " + str(mp.size(catalog['departamentos'])))
 
     elif int(inputs[0]) == 2:
+        #PRUEBA DE EJECUCIÓN
+        start_time = process_time()
+
         anio1 = int(input("Ingrese el año inicial a consultar: \n"))
         anio2 = int(input("Ingrese el año final a consultar: \n"))
         retorno = controller.cronartist(catalog, anio1, anio2)
         printcornarttist(retorno, anio1, anio2)
+
+        #PRUEBAS DE EJECUCIÓN
+        stop_time = process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print("tiempo de ejecución: " + str(elapsed_time_mseg))
         
     elif int(inputs[0]) == 3:
+        #PRUEBA DE EJECUCIÓN
+        start_time = process_time()
+
         finc = str(input("Ingrese la fecha incial de búsqueda (AAAA-MM-DD): "))
         ffin = str(input("Ingrese la fecha final de búsqueda (AAAA-MM-DD): "))
         obras = controller.comparedateacquired(catalog, finc, ffin)
         printcomparedateacquired(obras, ffin, finc)
+
+        #PRUEBAS DE EJECUCIÓN
+        stop_time = process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print("tiempo de ejecución: " + str(elapsed_time_mseg))
     
     elif int(inputs[0]) == 4:
+        #PRUEBA DE EJECUCIÓN
+        start_time = process_time()
+
         autor = input('\nIngrese el nombre del Autor que desea consultar:\n')
         medios = controller.getmediums(catalog, autor)
         printgetmediums(catalog, medios, autor)
+        
+        #PRUEBAS DE EJECUCIÓN
+        stop_time = process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print("tiempo de ejecución: " + str(elapsed_time_mseg))
 
     elif int(inputs[0]) == 6:
+        #PRUEBA DE EJECUCIÓN
+        start_time = process_time()
+
         departamento = input("\nIngrese el nombre del departamento que desea consultar: ")
         mapa = controller.calculartransporte(catalog, departamento)
         printcalculartransporte(catalog, mapa, departamento)
+
+        #PRUEBAS DE EJECUCIÓN
+        stop_time = process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print("tiempo de ejecución: " + str(elapsed_time_mseg))
 
     else:
         print("Cerrando aplicación... ")
