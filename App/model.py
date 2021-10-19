@@ -373,7 +373,7 @@ def calculartransporte(catalog, departamento):
     compareprecio(obras)
     ls = cincoprimeros(obras)
     mp.put(mapa, "costosas", ls)
-    comparedates(obras)
+    compareDates(obras)
     ls = cincoprimeros(obras)
     mp.put(mapa, "antiguas", ls)
     return mapa
