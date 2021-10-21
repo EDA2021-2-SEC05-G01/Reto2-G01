@@ -48,18 +48,14 @@ def loadData(catalog):
     estructura de datos
     """
     loadArtists(catalog)
-    start_time = process_time()
     loadArtworks(catalog)
-    stop_time = process_time()
-    elapsed_time_mseg = (stop_time - start_time)*1000
-    print("timepo: " + str(elapsed_time_mseg))
 
 
 def loadArtworks(catalog):
     """
     Carga las obras del museo.
     """
-    artfile = cf.data_dir + 'Artworks-utf8-large.csv'
+    artfile = cf.data_dir + 'Artworks-utf8-small.csv'
     input_file = csv.DictReader(open(artfile, encoding='utf-8'))
     for obra in input_file:
         model.AddArtworks(catalog, obra)
@@ -68,7 +64,7 @@ def loadArtists(catalog):
     """
     Carga los artistas de las obras.
     """
-    artfile = cf.data_dir + 'Artists-utf8-large.csv'
+    artfile = cf.data_dir + 'Artists-utf8-small.csv'
     input_file = csv.DictReader(open(artfile, encoding='utf-8'))
     for artist in input_file:
         model.AddArtists(catalog, artist)
