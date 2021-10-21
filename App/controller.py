@@ -102,3 +102,7 @@ def getmediums(catalog, autor):
 def calculartransporte(catalog, departamento):
     mapa = model.calculartransporte(catalog, departamento)
     return mapa
+
+def obtenerPorNacionalidad(catalog):
+    return model.getNacion(catalog)
+

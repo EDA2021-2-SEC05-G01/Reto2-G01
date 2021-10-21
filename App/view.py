@@ -113,6 +113,24 @@ def printgetmediums(catalog, medios, autor):
     else:
         print("No se encontraron obras de ese autor")
 
+def artworksPorNacionalidades(retorno):
+    print("\nLos diez paises con mas obras son: " )
+    for i in lt.iterator(retorno[0]):
+        print(i["pais"]+":  "+str(i["num"]))
+    print("Muestra de las obras del pais con mas de ellas: "+str(lt.getElement(retorno[0],1)["pais"]))    
+    n = retorno[1]
+    n2=retorno[2]
+    for x in lt.iterator(n):
+            print("\n Titulo: " + x["Title"] + "\n Artista(s): " + x["ConstituentID"] + 
+                "\n Fecha: " + x["DateAcquired"] + "\n Medio: " + x["Medium"]
+                + "\n Dimensiones: " + x["Dimensions"] + "\n")
+    for x in lt.iterator(n2):
+            print("\n Titulo: " + x["Title"] + "\n Artista(s): " + x["ConstituentID"] + 
+                "\n Fecha: " + x["DateAcquired"] + "\n Medio: " + x["Medium"]
+                + "\n Dimensiones: " + x["Dimensions"] + "\n")
+
+
+
 def printcalculartransporte(catalog, mapa, departamento):
     obras = lt.size(mp.get(catalog["departamentos"], departamento)['value'])
     if obras:
@@ -182,6 +200,10 @@ while True:
         autor = input('\nIngrese el nombre del Autor que desea consultar:\n')
         medios = controller.getmediums(catalog, autor)
         printgetmediums(catalog, medios, autor)
+
+    elif int(inputs[0])==5:
+        resultado=controller.getNacion(catalog)
+        artworksPorNacionalidades(resultado)    
 
     elif int(inputs[0]) == 6:
         departamento = input("\nIngrese el nombre del departamento que desea consultar: ")

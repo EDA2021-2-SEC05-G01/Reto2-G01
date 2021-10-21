@@ -333,6 +333,28 @@ def getmediums(catalog, autor):
 
     return medios
 
+def ObtenerPorNacionalidad(catalogo):
+    naciones=mp.keySet(catalogo["nacionalidad"])
+    n=lt.newList("ARRAY_LIST")
+    e=1
+    i=0
+    for x in lt.iterator(naciones):
+        if x=="Nationality unknown" or x=="":
+           i+=lt.size(lt.getElement(mp.valueSet(catalogo["nacionalidad"]),e)) 
+        else:
+           lt.addLast(n,{"pais":x,"num":lt.size(lt.getElement(mp.valueSet(catalogo["nacionalidad"]),e))})
+        e+=1
+    lt.addLast(n,{"pais":"Nationality unknown", "num":i})       
+    new=mg.sort(n,ordenarNacionalidad)
+    mayores=lt.subList(new,1,10)
+    mayor=mp.get(catalogo["nacionalidad"],lt.getElement(new,1)["pais"])["value"]
+    primeras=obtenerPrimero(mayor)
+    ultimas=obtenerUltimo(mayor)
+    
+    return mayores,primeras,ultimas 
+
+
+
 def comparedateacquired(catalog, finc, ffin):
     finc = strptime(finc, "%Y-%m-%d")
     ffin = strptime(ffin, "%Y-%m-%d")
@@ -443,6 +465,17 @@ def comparedates(lst):
 
 def compareprecio(lst):
     mg.sort(lst, compareprecios)
+
+def ordenarNacionalidad(p1,p2):
+    return p1["num"]>p2["num"] 
+
+def obtenerPrimero(lista):
+    return lt.subList(lista, 1, 3)    
+
+def obtenerUltimo(lista):
+    posicionl=mp.size(lista)-2
+    return lt.subList(lista, posicionl, 3)
+
 
 
 # Funciones de aritmática y cálculos
